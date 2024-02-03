@@ -1,0 +1,57 @@
+version: "3.8"
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    privileged: true
+    env_file:
+      - .env
+    ports:
+      - 8090:80
+    volumes:
+      - ./app:/app
+    depends_on:
+      - db
+      - redis
+    command: uvicorn main:app --host
+    profiles:
+      - donotstart
+
+  db:
+    image: postgres:14.1-alpine
+    restart: on-failure
+    env_file: .env
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASS}
+      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_PORT=${DB_PORT}
+
+  redis:
+    image: "bitnami/redis:latest"
+    env_file:
+      - .env
+    command: /bin/sh -c "redis-server --requirepass ${REDIS_PASS}"
+    ports:
+      - 6379:6379
+
+  testing:
+    profiles:
+      - donotstart
+    build:
+      context: .
+      dockerfile: Dockerfile
+    privileged: true
+    env_file:
+      - .env
+    working_dir: /src/app
+    depends_on:
+      - app
+    command: pytest tests
+    volumes:
+      - ./app:/app
+
