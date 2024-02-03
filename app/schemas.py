@@ -35,6 +35,7 @@ class AppointmentUpdateSerializer(BaseModel):
 class AppointmentSerializer(BaseModel):
     id: int
     organization_id: int
+    user_id: int
     start: datetime.datetime
     end: datetime.datetime
     created_at: datetime.datetime
@@ -54,3 +55,77 @@ class OrganizationSerializer(BaseModel):
     name: str
     created_at: datetime.datetime
     updated_at: datetime.datetime
+
+
+class UserOutSerializer(BaseModel):
+    id: int
+    username: str
+    email: str
+    created_at: datetime.datetime
+    updated_at: datetime.datetime | None
+
+    class Config:
+        orm_mode = True
+
+
+class TokenSerializer(BaseModel):
+    access_token: str
+    refresh_token: str
+    token_type: str = "bearer"
+
+    class Config:
+        orm_mode = True
+
+
+class TokenPayloadSerializer(BaseModel):
+    sub: str = None
+    exp: int
+    username: str = None
+
+    class Config:
+        orm_mode = True
+
+
+class UserAuthSerializer(BaseModel):
+    username: str
+    password: str
+    email: str
+
+    @validator("username")
+    def username_alphanumeric(cls, v):
+        assert v.isalnum(), "username must be alphanumeric"
+        return v
+
+    @validator("password")
+    def password_length(cls, v):
+        assert len(v) >= 8, "password must be at least 8 characters"
+        return v
+
+    @validator("email")
+    def email_valid(cls, v):
+        assert "@" in v, "invalid email"
+        return v
+
+    class Config:
+        orm_mode = True
+        schema_extra = {
+            "example": {
+                "username": "testuser",
+                "password": "password123",
+                "email": "test@test.com"
+            }
+        }
+
+
+class UserLoginSerializer(BaseModel):
+    username: str
+    password: str
+
+    class Config:
+        orm_mode = True
+        schema_extra = {
+            "example": {
+                "username": "testuser",
+                "password": "password123"
+            }
+        }

@@ -2,7 +2,8 @@ import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, Session
-from .main import app, check_appointment_valid
+from .main import app
+from .routers.appointments import check_appointment_valid
 from .models import Appointment, Organization
 from .schemas import AppointmentCreateSerializer, OrganizationCreateSerializer
 from .dependencies import get_current_db

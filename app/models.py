@@ -25,7 +25,6 @@ class AppointmentVersion(Base):
     relationship("Appointment", backref="previous_versions")
 
 
-
 class Appointment(Base):
     __tablename__ = "appointments"
 
@@ -35,6 +34,23 @@ class Appointment(Base):
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, onupdate=datetime.utcnow)
     organization_id = Column(Integer, ForeignKey("organizations.id"), nullable=False)
-    # Relationships
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+
+    user = relationship("User", backref="appointments")
     organization = relationship("Organization", backref="appointments")
     previous_versions = relationship("AppointmentVersion", backref="appointment")
+
+
+class User(Base):
+    __tablename__ = "users"
+
+    id = Column(Integer, primary_key=True)
+    uuid = Column(String, nullable=False)
+    username = Column(String, nullable=False)
+    password = Column(String, nullable=False)
+    email = Column(String, nullable=False)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, onupdate=datetime.utcnow)
+
+    def __repr__(self):
+        return f"<User {self.username}>"
