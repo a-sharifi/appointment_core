@@ -12,6 +12,9 @@ class Organization(Base):
     name = Column(String, nullable=False)
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, onupdate=datetime.utcnow)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False, default=1)
+
+    user = relationship("User", backref="organizations")
 
 
 class AppointmentVersion(Base):
@@ -45,7 +48,6 @@ class User(Base):
     __tablename__ = "users"
 
     id = Column(Integer, primary_key=True)
-    uuid = Column(String, nullable=False)
     username = Column(String, nullable=False)
     password = Column(String, nullable=False)
     email = Column(String, nullable=False)

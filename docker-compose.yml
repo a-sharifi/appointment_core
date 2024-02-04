@@ -14,7 +14,7 @@ services:
       - ./app:/app
     depends_on:
       - db
-      - redis
+#      - redis
     command: uvicorn main:app --host
     profiles:
       - donotstart
@@ -31,13 +31,6 @@ services:
       - POSTGRES_DB=${DB_NAME}
       - POSTGRES_PORT=${DB_PORT}
 
-  redis:
-    image: "bitnami/redis:latest"
-    env_file:
-      - .env
-    command: /bin/sh -c "redis-server --requirepass ${REDIS_PASS}"
-    ports:
-      - 6379:6379
 
   testing:
     profiles:

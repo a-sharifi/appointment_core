@@ -15,13 +15,22 @@ http://localhost:8000/docs
 http://localhost:8000/redoc
 ```
 
+## Environments
+```
+DB_NAME=<DB_NAME>
+DB_USER=<DB_USER>
+DB_PASS=<DB_PASS>
+JWT_SECRET_KEY=<SECRET_KEY>
+JWT_REFRESH_SECRET_KEY=KEY>
+```
+
+
 
 ## ERD
 ![ERD](appointments-erd.png)
 
-## TODO
-- [ ] Add alembic docs for database migration
-- [ ] Add more tests
+#
+
 
 ## 
 

@@ -22,7 +22,6 @@ async def create_user(data: UserAuthSerializer, db=Depends(get_current_db)):
         username=data.username,
         email=data.email,
         password=get_hashed_password(data.password),
-        uuid=uuid.uuid4()
     )
     db.add(user)
     db.commit()

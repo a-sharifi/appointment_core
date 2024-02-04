@@ -55,6 +55,7 @@ class OrganizationSerializer(BaseModel):
     name: str
     created_at: datetime.datetime
     updated_at: datetime.datetime
+    user_id: int
 
 
 class UserOutSerializer(BaseModel):

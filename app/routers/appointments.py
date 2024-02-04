@@ -66,7 +66,7 @@ async def update_appointment(appointment_id: int, appointment: AppointmentCreate
                              db: Session = Depends(get_current_db), user: User = Depends(get_current_user)):
     # Check if appointment exists
     existing_appointment = db.query(Appointment).filter(
-        Appointment.id == appointment_id & Appointment.user_id == user.id).first()
+        (Appointment.id == appointment_id) & (Appointment.user_id == user.id)).first()
     check_appointment_valid(appointment, db)
     if existing_appointment is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Appointment not found")
@@ -82,9 +82,11 @@ async def update_appointment(appointment_id: int, appointment: AppointmentCreate
 
 
 @router.delete("/{appointment_id}", response_model=AppointmentSerializer)
-async def delete_appointment(appointment_id: int, db: Session = Depends(get_current_db)):
+async def delete_appointment(appointment_id: int, db: Session = Depends(get_current_db),
+                             user: User = Depends(get_current_user)):
     # Check if appointment exists
-    existing_appointment = db.query(Appointment).filter(Appointment.id == appointment_id).first()
+    existing_appointment = db.query(Appointment).filter(
+        (Appointment.id == appointment_id) & (Appointment.user_id == user.id)).first()
     if existing_appointment is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Appointment not found")
 
@@ -97,7 +99,8 @@ async def delete_appointment(appointment_id: int, db: Session = Depends(get_curr
 @router.get("/{appointment_id}/previous_versions")
 async def read_appointment_previous_versions(appointment_id: int, db: Session = Depends(get_current_db),
                                              user: User = Depends(get_current_user)):
-    appointment = db.query(Appointment).filter(Appointment.id == appointment_id, Appointment.user_id == user.id).first()
+    appointment = db.query(Appointment).filter(Appointment.id == appointment_id,
+                                               Appointment.user_id == user.id).first()
 
     if appointment is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Appointment not found")
